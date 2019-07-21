@@ -4,7 +4,7 @@ import Story from '../../models/story';
 
 const router = express.Router();
 
-router.post('/api/series/:seriesId/story/create', async (req, res) => {
+router.post('/series/:seriesId/story/create', async (req, res) => {
   const { title, authorId } = req.body;
   const { seriesId } = req.params;
 
@@ -17,7 +17,7 @@ router.post('/api/series/:seriesId/story/create', async (req, res) => {
   }
 });
 
-router.delete('/api/series/:seriesId/remove', (req, res) => {
+router.delete('/series/:seriesId/remove', (req, res) => {
 
 });
 
