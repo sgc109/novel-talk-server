@@ -1,5 +1,5 @@
-module.exports = {
+export default {
   log: (msg) => {
     console.log(msg);
-  }
-}
+  },
+};

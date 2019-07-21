@@ -1,17 +1,26 @@
-const swaggerUi = require('swagger-ui-express');
-const express = require('express');
-const swaggerDocument = require('./swagger.json');
-const Console = require('./console.js');
+import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import mongoose from 'mongoose';
+import Console from './src/console';
+import swaggerDocument from './swagger.json';
+import router from './src/app/router';
 
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.json({ result: 'hello world!' });
+app.use(express.urlencoded());
+app.use(express.json());
+
+router(app);
+
+mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
+const db = mongoose.connection;
+// db.on('error', Console.error);
+db.once('open', () => {
+  Console.log('connected to mongodb server');
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-// app.use('/api/v1', router);
 
 app.listen(port, () => {
   Console.log(`Express is running on port ${port}`);
