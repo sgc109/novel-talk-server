@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const User = new Schema({
-  nickname: { type: String, required: true },
+  nickname: { type: String, unique: true, required: true },
   isOfficial: { type: Boolean, default: false },
   profileImage: {
     data: Buffer,

@@ -1,16 +1,19 @@
+import express from 'express';
 import User from '../../models/user';
 
-export default (app) => {
-  app.post('/api/user/create', async (req, res) => {
-    const { nickname } = req.body;
+const router = express.Router();
 
-    let user;
-    try {
-      user = await User.create(nickname);
-    } catch (err) {
-      return res.send(err);
-    }
+router.post('/user/create', async (req, res) => {
+  const { nickname } = req.body;
 
-    return res.status(201).json(user);
-  });
-};
+  let user;
+  try {
+    user = await User.create(nickname);
+  } catch (err) {
+    return res.status(409).send('duplicate nickname');
+  }
+
+  return res.status(201).json(user);
+});
+
+export default router;
