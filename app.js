@@ -6,7 +6,7 @@ import router from './src/app/router';
 import swaggerDocument from './swagger.json';
 import Console from './src/console';
 import requiresAuth from './src/oauth/google';
-
+import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
 
 const app = express();
 const port = 3000;
@@ -17,8 +17,10 @@ app.use(requiresAuth);
 
 router(app);
 
+Console.log(process.env.MY_VAR);
+
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
+mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDBName}`, { useNewUrlParser: true });
 const db = mongoose.connection;
 // db.on('error', Console.error);
 db.once('open', () => {
