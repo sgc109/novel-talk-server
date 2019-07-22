@@ -63,3 +63,7 @@ typings/
 .vscode
 
 uploads
+
+# secret
+serviceAccountKey.json
+*serviceAccountKey.json
