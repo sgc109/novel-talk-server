@@ -67,3 +67,5 @@ uploads
 # secret
 serviceAccountKey.json
 *serviceAccountKey.json
+
+novel-talk-ec2.pem

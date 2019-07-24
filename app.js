@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import router from './src/app/router';
 import swaggerDocument from './swagger.json';
 import Console from './src/console';
-import requiresAuth from './src/oauth/google';
+// import requiresAuth from './src/oauth/google';
 import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
 
 const app = express();
@@ -13,7 +13,7 @@ const port = 3000;
 
 app.use(express.urlencoded());
 app.use(express.json());
-app.use(requiresAuth);
+// app.use(requiresAuth);
 
 router(app);
 

@@ -4,9 +4,9 @@ import Series from '../../models/series';
 
 const router = express.Router();
 
-// router.get('/series/all', (req, res) => {
-
-// });
+router.get('/series/all', (req, res) => {
+  const { sortBy, limit } = req.param;
+});
 
 // router.get('/series', (req, res) => {
 

@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test": "eslint src/** && MONGO_HOST=mongo babel-node app.js",
     "docker:start": "eslint src/** && MONGO_HOST=mongo babel-node app.js",
     "start": "nodemon --exec 'eslint src/** && babel-node app.js'"
   },
