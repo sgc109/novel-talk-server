@@ -1,1 +1,1 @@
-ssh -i "noveltalkserver.pem" ubuntu@ec2-18-224-58-26.us-east-2.compute.amazonaws.com "lsb_release -a"
+ssh -i "novel-talk-ec2.pem" ubuntu@ec2-54-180-153-139.ap-northeast-2.compute.amazonaws.com "cd ~/novel-talk-server && ./deploy.sh"
