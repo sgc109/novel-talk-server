@@ -13,9 +13,9 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     req.decoded = await jwt.verify(token, req.app.get('jwt-secret'));
-    next();
+    return next();
   } catch (err) {
-    res.status(403).json({
+    return res.status(403).json({
       success: false,
       message: err.message,
     });
