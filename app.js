@@ -29,7 +29,6 @@ db.once('open', () => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-
 app.listen(port, () => {
   Console.log(`Express is running on port ${port}`);
 });
