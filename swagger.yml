@@ -1,0 +1,831 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Swagger Novel Talk"
+host: "localhost"
+basePath: "/api"
+tags:
+- name: "auth"
+  description: ""
+- name: "user"
+  description: ""
+- name: "genre"
+  description: ""
+- name: "series"
+  description: ""
+- name: "story"
+  description: ""
+- name: "talk"
+  description: "`Let's do it later!`"
+- name: "comment"
+  description: ""
+- name: "report"
+  description: ""
+- name: "notification"
+  description: ""
+schemes:
+- "https"
+- "http"
+paths:
+  /auth/login:
+    get:
+      tags:
+      - 'auth'
+      summary: "signin"
+      description: "description"
+      responses:
+        400:
+          description: ""
+  /auth/logout:
+    get:
+      tags:
+      - 'auth'
+      summary: "signout"
+      description: "description"
+      responses:
+        400:
+          description: ""
+  /auth/register:
+    post:
+      tags:
+      - 'auth'
+      summary: "create account"
+      description: "description"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "id"
+        in: "formData"
+        description: ""
+        required: true
+        type: string
+      responses:
+        400:
+          description: ""
+  /auth/unregister:
+    delete:
+      tags:
+      - 'auth'
+      summary: "delete account"
+      description: "description"
+      responses:
+        400:
+          description: ""
+          
+  /users/{userId}:
+    get:
+      tags:
+      - 'user'
+      summary: 'get profile of this user'
+      description: 'description'
+      parameters:
+      - name: userId
+        in: 'path'
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: ""
+  /users/{userId}/authorize:
+    post:
+      tags:
+      - user
+      summary: 'make this user official writer'
+      description: 'description'
+      parameters:
+      - name: userId
+        in: 'path'
+        required: true
+        type: string
+      responses:
+        400:
+          description: ""
+  /users/{userId}/followers:
+    get:
+      tags:
+      - user
+      summary: 'get list of followers of this user'
+      description: 'description'
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        400:
+          description: ''
+  /users/{userId}/follow:
+    post:
+      tags:
+      - user
+      summary: 'follow this user'
+      description: 'description'
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+      responses:
+        400:
+          description: ''
+  /users/{userId}/unfollow:
+    delete:
+      tags:
+      - user
+      summary: 'unfollow this user'
+      description: 'description'
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+      responses:
+        400:
+          description: ''
+  /genres:
+    get:
+      tags:
+      - 'genre'
+      summary: 'get list of all genres'
+      description: 'description'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Genre"
+        400:
+          description: ""
+    post:
+      tags:
+      - 'genre'
+      summary: 'create a genre'
+      description: 'description'
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: title
+        in: formData
+        required: true
+        type: string
+      - name: coverImage
+        in: formData
+        required: true
+        type: file
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: "#/definitions/Genre"
+        400:
+          description: ""
+  /genres/{genreId}:
+    put:
+      tags:
+      - 'genre'
+      summary: 'modify this genre'
+      description: 'description'
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: genreId
+        in: path
+        required: true
+        type: string
+      - name: title
+        in: formData
+        required: true
+        type: string
+      - name: coverImage
+        in: formData
+        required: true
+        type: file
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Genre"
+        400:
+          description: ""
+    delete:
+      tags:
+      - 'genre'
+      summary: 'delete this genre'
+      description: 'description'
+      parameters:
+      - name: genreId
+        in: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: ""
+  /genres/{genreId}/series:
+    get:
+      tags:
+      - 'genre'
+      summary: 'get list of series in this genre'
+      description: 'description'
+      parameters:
+      - name: genreId
+        in: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Series"
+        400:
+          description: ""
+  /series:
+    get:
+      tags:
+      - 'series'
+      summary: 'get list of series'
+      description: 'sorted by `lastWrittenAt` by default'
+      parameters:
+      - name: keyword
+        in: 'query'
+        required: true
+        type: string
+      - name: cnt
+        in: query
+        required: true
+        type: number
+      - name: lastId
+        in: query
+        required: true
+        type: number
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Series"
+        400:
+          description: ""
+    post:
+      tags:
+      - 'series'
+      summary: 'create a series'
+      description: 'description'
+      responses:
+        201:
+          description: OK
+          schema:
+            $ref: "#/definitions/Series"
+        400:
+          description: ""
+  /series/{seriesId}:
+    parameters:
+    - name: "seriesId"
+      in: "path"
+      description: "description"
+      required: true
+      type: "string"
+    get:
+      tags:
+      - 'series'
+      summary: 'get information of this series'
+      description: 'description'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Series"
+        400:
+          description: ""
+    delete:
+      tags:
+      - 'series'
+      summary: 'remove this series'
+      description: 'description'
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: ""
+  /series/{seriesId}/stories:
+    get:
+      tags:
+      - 'series'
+      summary: 'get list of stories in this series'
+      description: 'description'
+      parameters:
+      - name: "seriesId"
+        in: "path"
+        description: "description"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Story"
+        400:
+          description: ""
+    post:
+      tags:
+      - 'story'
+      summary: 'write a story in this series'
+      description: 'description'
+      consumes:
+      - "multipart/form-data"
+      parameters:
+        - name: 'seriesId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: 'title'
+          in: 'formData'
+          description: "description"
+          required: true
+          type: string
+        - name: 'coverImage'
+          in: 'formData'
+          description: "description"
+          required: true
+          type: file
+      responses:
+        201:
+          description: ''
+          schema:
+            $ref: '#/definitions/Story'
+        400:
+          description: ''
+  /stories/{storyId}/evaluate:
+    post:
+      tags:
+      - 'story'
+      summary: 'give a score about this story'
+      description: 'description'
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: 'score'
+          in: 'formData'
+          description: "description"
+          required: true
+          type: string
+      responses:
+        400:
+          description: ''
+  /stories/{storyId}:
+    delete:
+      tags:
+      - 'story'
+      summary: 'remove this story'
+      description: 'description'
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        400:
+          description: ""
+  /stories/{storyId}/talks:
+    get:
+      tags:
+      - 'talk'
+      summary: 'get talks in story'
+      description: 'description'
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: 'offset'
+          in: 'query'
+          description: ''
+          required: true
+          type: string
+        - name: 'cnt'
+          in: 'query'
+          description: ''
+          required: true
+          type: string
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Talk'
+        400:
+          description: ""
+    post:
+      tags:
+      - 'talk'
+      summary: 'create talk in story'
+      description: 'description'
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: 'storyId'
+        in: 'path'
+        description: ''
+        required: true
+        type: string
+      - name: 'content'
+        in: 'formData'
+        description: ''
+        required: true
+        type: string
+      - name: 'who'
+        in: 'formData'
+        description: ''
+        required: true
+        type: string
+      - name: 'action'
+        in: 'formData'
+        description: ''
+        required: true
+        type: string
+      responses:
+        201:
+          description: ''
+          schema:
+            $ref: '#/definitions/Talk'
+        400:
+          description: ""
+  /stories/{storyId}/talks/{talkId}:
+    delete:
+      tags:
+      - 'talk'
+      summary: ''
+      description: ''
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          required: true
+          type: string
+        - name: 'talkId'
+          in: 'path'
+          required: true
+          type: string
+      responses:
+        202:
+          description: OK
+  /stories/{storyId}/comments:
+    get:
+      tags:
+      - 'comment'
+      summary: 'get comments in story'
+      description: 'description'
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: 'lastItemId'
+          in: 'query'
+          description: ''
+          required: true
+          type: string
+        - name: 'cnt'
+          in: 'query'
+          description: ''
+          required: true
+          type: number
+        - name: 'sortBy'
+          in: 'query'
+          description: ''
+          required: true
+          type: "string"
+          enum:
+          - "cntLike"
+          - "writtenAt"
+          default: "writtenAt"
+      responses:
+        202:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Comment'
+        400:
+          description: ""
+    post:
+      tags:
+      - 'comment'
+      summary: 'write comment in story'
+      description: 'description'
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+        - name: 'storyId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: 'content'
+          in: 'formData'
+          description: ''
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: ''
+          schema:
+            $ref: '#/definitions/Talk'
+        400:
+          description: ""
+  /comments/{commentId}:
+    delete:
+      tags:
+      - 'comment'
+      summary: 'remove this comment'
+      description: 'description'
+      parameters:
+        - name: 'commentId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        202:
+          description: OK
+        400:
+          description: ""
+  /comments/{commentId}/hide:
+    patch:
+      tags:
+      - 'comment'
+      summary: 'hide this comment'
+      description: 'description'
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+        - name: 'commentId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: ""
+        500:
+          description: Error
+  /comments/{commentId}/unhide:
+    patch:
+      tags:
+      - 'comment'
+      summary: 'reveal this comment'
+      description: 'description'
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+        - name: 'commentId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: ""
+        500:
+          description: Error
+  
+  /comments/{commentId}/like:
+    patch:
+      tags:
+      - 'comment'
+      summary: 'like this comment'
+      description: 'description'
+      parameters:
+        - name: 'commentId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: ""
+        500:
+          description: Error
+  /comments/{commentId}/unlike:
+    patch:
+      tags:
+      - 'comment'
+      summary: 'unlike this comment'
+      description: 'description'
+      parameters:
+        - name: 'commentId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: ""
+        500:
+          description: Error
+  /reports:
+    get:
+      tags:
+      - report
+      summary: 'get list of reports'
+      description: 'description'
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        type: string
+      - name: endDate
+        in: query
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Report'
+        400:
+          description: ""
+definitions:
+  User:
+    required:
+      - _id
+      - nickname
+      - isOfficial
+    type: object
+    properties:
+      _id:
+        type: string
+      nickname:
+        type: string
+        example: sungho
+      isOfficial:
+        type: boolean
+        default: false
+        example: false
+      profileImage:
+        type: object
+        properties:
+          data:
+            type: string
+          contentType:
+            type: string
+  Genre:
+    type: object
+    properties:
+      _id:
+        type: string
+      title:
+        type: string
+        example: Romance
+      description:
+        type: string
+        example: Love story
+      coverImage:
+        type: object
+        properties:
+          data:
+            type: string
+          contentType:
+            type: string
+  Series:
+    type: object
+    properties:
+      _id:
+        type: string
+      title:
+        type: string
+        example: Harry Potter
+      authorId:
+        type: string
+        example: J.K. Rowling
+      coverImage:
+        type: object
+        properties:
+          data:
+            type: string
+          contentType:
+            type: string
+      genreId:
+        type: array
+        items:
+          type: integer
+      lastWrittenAt:
+        type: string
+        format: date:time
+        default: '1970-01-01:00:00:00'
+  Story:
+    type: object
+    properties:
+      _id:
+        type: string
+      seriesId:
+        type: string
+      authorId:
+        type: string
+      storyNo:
+        type: integer
+        example: 1
+      title:
+        type: string
+        example: the Chamber of Secrets
+      createdAt:
+        type: string
+        format: date-time
+      cntComment:
+        type: integer
+      cntView:
+        type: integer
+  Talk:
+    type: object
+    properties:
+      _id:
+        type: string
+      type:
+        type: string
+        enum:
+          - image
+          - text
+      index:
+        type: integer
+      text:
+        type: string
+      image:
+        type: object
+        properties:
+          data:
+            type: string
+          contentType:
+            type: string
+      action:
+        type: object
+  Comment:
+    type: object
+    properties:
+      _id:
+        type: string
+      storyId:
+        type: string
+      writerId:
+        type: string
+      isHidden:
+        type: boolean
+      createAt:
+        type: string
+        format: date-time
+      cntLike:
+        type: integer
+  Follow:
+    type: object
+    properties:
+      _id:
+        type: string
+  Report:
+    type: object
+    properties:
+      _id:
+        type: string
+  Badge:
+    type: object
+    properties:
+      _id:
+        type: string
+  Notification:
+    type: object
+    properties:
+      _id:
+        type: string
