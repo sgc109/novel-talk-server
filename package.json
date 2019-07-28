@@ -1,6 +1,7 @@
 {
   "scripts": {
     "test": "eslint src/**",
+    "debug": "nodemon --exec 'eslint src/** && babel-node app.js'",
     "docker:start": "eslint src/** && MONGO_HOST=mongo babel-node app.js",
     "start": "nodemon --exec 'eslint src/** && babel-node app.js'"
   },
@@ -8,16 +9,20 @@
     "babel-core": "^6.26.3",
     "diff": "3.5.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "firebase-admin": "^8.2.0",
     "growl": "1.10.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.3.0-beta2",
     "mongoose": "^5.6.4",
     "mpath": "0.5.1",
     "multer": "^1.4.2",
     "string": "^3.3.3",
     "swagger": "^0.7.5",
+    "swagger-editor": "^3.6.31",
     "swagger-jsdoc": "^3.3.0",
-    "swagger-ui-express": "^4.0.7"
+    "swagger-ui-express": "^4.0.7",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
