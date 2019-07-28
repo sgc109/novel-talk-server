@@ -1,12 +1,15 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import mongoose from 'mongoose';
-
+import MongoError from 'mongodb';
+import 'express-async-errors';
+import YAML from 'yamljs';
 import router from './src/app/router';
-import swaggerDocument from './swagger.json';
 import Console from './src/console';
 // import requiresAuth from './src/oauth/google';
 import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
+
+const swaggerDocument = YAML.load('./swagger.yml');
 
 const app = express();
 const port = 3000;
@@ -28,6 +31,17 @@ db.once('open', () => {
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// eslint-disable-next-line no-unused-vars
+app.use((error, req, res, next) => {
+  if (error instanceof MongoError) {
+    return res.status(503).json({
+      type: 'MongoError',
+      message: error.message,
+    });
+  }
+  return res.status(500).send(error);
+});
 
 app.listen(port, () => {
   Console.log(`Express is running on port ${port}`);
