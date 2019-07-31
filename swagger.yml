@@ -29,14 +29,28 @@ schemes:
 - "http"
 paths:
   /auth/login:
-    get:
+    post:
       tags:
       - 'auth'
       summary: "signin"
       description: "description"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+        - name: oauthId
+          in: formData
+          description: ''
+          required: true
+          type: string
       responses:
-        400:
-          description: ""
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: 'Internal Server Error'
+        504:
+          description: 'Gateway Timeout'
   /auth/logout:
     get:
       tags:
@@ -52,17 +66,23 @@ paths:
       - 'auth'
       summary: "create account"
       description: "description"
-      consumes:
-      - "application/x-www-form-urlencoded"
       parameters:
-      - name: "id"
-        in: "formData"
-        description: ""
-        required: true
-        type: string
+        - name: provider
+          in: query
+          description: ''
+          required: true
+          type: string
+          enum:
+            - google
+            - facebook
+            - naver
+            - kakao
+          default: google
       responses:
-        400:
-          description: ""
+        201:
+          description: Created
+        500:
+          description: 'Internal Server Error'
   /auth/unregister:
     delete:
       tags:
@@ -72,6 +92,42 @@ paths:
       responses:
         400:
           description: ""
+  /oauth/google:
+    get:
+      tags:
+      - 'auth'
+      summary: 'google oauth'
+      description: ''
+      responses:
+        200:
+          description: OK
+  /oauth/facebook:
+    get:
+      tags:
+      - 'auth'
+      summary: 'facebook oauth'
+      description: ''
+      responses:
+        200:
+          description: OK
+  /oauth/kakao:
+    get:
+      tags:
+      - 'auth'
+      summary: 'kakao oauth'
+      description: ''
+      responses:
+        200:
+          description: OK
+  /oauth/naver:
+    get:
+      tags:
+      - 'auth'
+      summary: 'naver oauth'
+      description: ''
+      responses:
+        200:
+          description: OK
           
   /users/{userId}:
     get:
@@ -87,6 +143,8 @@ paths:
       responses:
         200:
           description: OK
+          schema:
+            $ref: '#/definitions/User'
         400:
           description: ""
   /users/{userId}/authorize:
@@ -101,6 +159,8 @@ paths:
         required: true
         type: string
       responses:
+        202:
+          description: Accepted
         400:
           description: ""
   /users/{userId}/followers:
@@ -135,8 +195,10 @@ paths:
           required: true
           type: string
       responses:
-        400:
-          description: ''
+        202:
+          description: Accepted
+        500:
+          description: 'Internal Server Error'
   /users/{userId}/unfollow:
     delete:
       tags:
@@ -149,13 +211,15 @@ paths:
           required: true
           type: string
       responses:
-        400:
-          description: ''
+        202:
+          description: Accepted
+        500:
+          description: 'Internal Server Error'
   /genres:
     get:
       tags:
       - 'genre'
-      summary: 'get list of all genres'
+      summary: 'get list of all genres (done~)'
       description: 'description'
       responses:
         200:
@@ -169,7 +233,7 @@ paths:
     post:
       tags:
       - 'genre'
-      summary: 'create a genre'
+      summary: 'create a genre (done~)'
       description: 'description'
       consumes:
       - "multipart/form-data"
@@ -193,7 +257,7 @@ paths:
     put:
       tags:
       - 'genre'
-      summary: 'modify this genre'
+      summary: 'modify this genre (done~)'
       description: 'description'
       consumes:
       - "multipart/form-data"
@@ -220,7 +284,7 @@ paths:
     delete:
       tags:
       - 'genre'
-      summary: 'delete this genre'
+      summary: 'delete this genre (done~)'
       description: 'description'
       parameters:
       - name: genreId
@@ -283,7 +347,7 @@ paths:
     post:
       tags:
       - 'series'
-      summary: 'create a series'
+      summary: 'create a series (done~)'
       description: 'description'
       responses:
         201:
@@ -314,7 +378,7 @@ paths:
     delete:
       tags:
       - 'series'
-      summary: 'remove this series'
+      summary: 'remove this series (done~)'
       description: 'description'
       responses:
         202:
@@ -370,6 +434,40 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Story'
+        400:
+          description: ''
+  /user/{userId}/series:
+    get:
+      tags:
+      - series
+      summary: 'get list of series written by this user'
+      description: 'description'
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+        - name: 'userId'
+          in: 'path'
+          description: ''
+          required: true
+          type: string
+        - name: sortBy
+          in: query
+          description: "description"
+          required: true
+          type: string
+          enum:
+          - dictionary
+          - cntComment
+          - writtenAt
+          - score
+          default: writtenAt
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Series"
         400:
           description: ''
   /stories/{storyId}/evaluate:
@@ -686,9 +784,20 @@ definitions:
       - _id
       - nickname
       - isOfficial
+      - provider
+      - oauthId
     type: object
     properties:
       _id:
+        type: string
+      provider:
+        type: string
+        enum:
+          - google
+          - facebook
+          - kakao
+          - naver
+      oauthId:
         type: string
       nickname:
         type: string
@@ -697,6 +806,10 @@ definitions:
         type: boolean
         default: false
         example: false
+      cntCommentsReceived:
+        type: integer
+        default: 0
+        example: 10
       profileImage:
         type: object
         properties:
@@ -732,7 +845,7 @@ definitions:
         example: Harry Potter
       authorId:
         type: string
-        example: J.K. Rowling
+        example: 5d4195f5697dc220d07efdde
       coverImage:
         type: object
         properties:
@@ -744,6 +857,9 @@ definitions:
         type: array
         items:
           type: integer
+      cntStories:
+          type: integer
+          example: 1
       lastWrittenAt:
         type: string
         format: date:time
