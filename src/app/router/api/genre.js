@@ -1,39 +1,58 @@
+/* eslint-disable no-unused-vars */
 import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import Genre from '../../models/genre';
+import { Http500Response } from '../response';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/genre/' });
 
-router.get('/genre/all', async (req, res) => {
-  let genres;
-  try {
-    genres = await Genre.getAllGenres();
-  } catch (err) {
-    res.status(500).send(err);
-  }
-  res.status(200).send(genres);
-});
+router.route('/genres')
+  .get(async (req, res) => {
+    const genres = await Genre.getAllGenres();
+    res.status(200).send(genres);
+  })
+  .post(upload.single('coverImage'), async (req, res) => {
+    // Check if requester has admin auth or not
+    const { title, description } = req.body;
+    const coverImage = {};
+    coverImage.data = fs.readFileSync(req.file.path);
+    coverImage.contentType = req.file.mimetype;
 
-router.get('/genre/:genreId', (req, res) => {
-  res.send('specific genre');
-});
+    const genre = await Genre.create(title, description, coverImage);
 
+    return res.status(201).json(genre);
+  });
 
-router.post('/genre/create', upload.single('coverImage'), async (req, res) => {
-  const { title, description } = req.body;
-  const coverImg = {};
-  coverImg.data = fs.readFileSync(req.file.path);
-  coverImg.contentType = req.file.mimetype;
+router.route('/genres/:genreId')
+  .put(upload.single('coverImage'), async (req, res) => {
+    const { genreId } = req.params;
+    const { title, description } = req.body;
+    const coverImage = {};
+    coverImage.data = fs.readFileSync(req.file.path);
+    coverImage.contentType = req.file.mimetype;
 
-  try {
-    await Genre.create(title, description, coverImg);
-  } catch (err) {
-    return res.status(500).send('duplicate title');
-  }
+    const result = await Genre.updateOne(
+      { _id: genreId },
+      { title, description, coverImage },
+    );
 
-  return res.status(202).send('creation accepted');
-});
+    if (!result.nModified) throw Http500Response('nothing is changed!');
+
+    return res.status(202).send('modification accepted');
+  })
+  .delete(async (req, res) => {
+    const { genreId } = req.params;
+
+    await Genre.deleteOne({ _id: genreId });
+
+    return res.status(202).send('deletion accepted');
+  });
+
+router.route('/genres/:genreId/series')
+  .get(async (req, res) => {
+    const { genreId } = req.params;
+  });
 
 export default router;
