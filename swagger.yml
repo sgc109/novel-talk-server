@@ -219,7 +219,7 @@ paths:
     get:
       tags:
       - 'genre'
-      summary: 'get list of all genres'
+      summary: 'get list of all genres (done~)'
       description: 'description'
       responses:
         200:
@@ -233,7 +233,7 @@ paths:
     post:
       tags:
       - 'genre'
-      summary: 'create a genre'
+      summary: 'create a genre (done~)'
       description: 'description'
       consumes:
       - "multipart/form-data"
@@ -257,7 +257,7 @@ paths:
     put:
       tags:
       - 'genre'
-      summary: 'modify this genre'
+      summary: 'modify this genre (done~)'
       description: 'description'
       consumes:
       - "multipart/form-data"
@@ -284,7 +284,7 @@ paths:
     delete:
       tags:
       - 'genre'
-      summary: 'delete this genre'
+      summary: 'delete this genre (done~)'
       description: 'description'
       parameters:
       - name: genreId
@@ -347,7 +347,7 @@ paths:
     post:
       tags:
       - 'series'
-      summary: 'create a series'
+      summary: 'create a series (done~)'
       description: 'description'
       responses:
         201:
@@ -378,7 +378,7 @@ paths:
     delete:
       tags:
       - 'series'
-      summary: 'remove this series'
+      summary: 'remove this series (done~)'
       description: 'description'
       responses:
         202:
