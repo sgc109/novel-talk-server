@@ -1080,3 +1080,7 @@ components:
       properties:
         _id:
           type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
