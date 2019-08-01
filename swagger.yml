@@ -29,7 +29,7 @@ tags:
 - name: "notification"
   description: ""
 paths:
-  /auth/login:
+  /auth/login/{provider}:
     get:
       tags:
       - 'auth'
@@ -42,15 +42,19 @@ paths:
           required: true
           schema:
             type: string
+            enum:
+              - google
+              - facebook
+              - naver
+              - kakao
+            default: google
         - name: oauthData
           in: header
           description: 'oauth data'
           required: true
           schema:
-            type: object
-            example: { 'token': '123123',
-                      'photoUrl': '',
-                      'displayName': 'sungho' }
+            type: string
+            example: "{ 'token': '123123', 'photoUrl': '', 'displayName': 'sungho' }"
       responses:
         200:
           description: OK
@@ -69,7 +73,7 @@ paths:
       responses:
         400:
           description: ""
-  /auth/register:
+  /auth/register/{provider}:
     post:
       tags:
       - 'auth'
@@ -77,8 +81,8 @@ paths:
       description: "description"
       parameters:
         - name: provider
-          in: query
-          description: ''
+          in: path
+          description: 'oauth provider'
           required: true
           schema:
             type: string
@@ -102,43 +106,6 @@ paths:
       responses:
         400:
           description: ""
-  /oauth/google:
-    get:
-      tags:
-      - 'auth'
-      summary: 'google oauth'
-      description: ''
-      responses:
-        200:
-          description: OK
-  /oauth/facebook:
-    get:
-      tags:
-      - 'auth'
-      summary: 'facebook oauth'
-      description: ''
-      responses:
-        200:
-          description: OK
-  /oauth/kakao:
-    get:
-      tags:
-      - 'auth'
-      summary: 'kakao oauth'
-      description: ''
-      responses:
-        200:
-          description: OK
-  /oauth/naver:
-    get:
-      tags:
-      - 'auth'
-      summary: 'naver oauth'
-      description: ''
-      responses:
-        200:
-          description: OK
-          
   /users/{userId}:
     get:
       tags:
@@ -413,7 +380,7 @@ paths:
     get:
       tags:
       - 'series'
-      summary: 'get information of this series'
+      summary: 'get information of this series (done~)'
       description: 'description'
       responses:
         200:
@@ -1084,4 +1051,3 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-      
