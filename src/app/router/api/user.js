@@ -3,16 +3,16 @@ import User from '../../models/user';
 
 const router = express.Router();
 
+router.route('/users/:userId')
+  .get(async (req, res) => {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
 
+    res.status(200).json(user);
+  });
 router.post('/user/create', async (req, res) => {
-  const { nickname } = req.body;
-
-  let user;
-  try {
-    user = await User.create(nickname);
-  } catch (err) {
-    return res.status(409).send('duplicate nickname');
-  }
+  const { nickname, oauthId, provider } = req.body;
+  const user = await User.create(nickname, oauthId, provider);
 
   return res.status(201).json(user);
 });

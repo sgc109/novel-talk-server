@@ -9,6 +9,8 @@ const Genre = new Schema({
     data: Buffer,
     contentType: String,
   },
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
 
 Genre.statics.create = function (title, description, coverImage) {

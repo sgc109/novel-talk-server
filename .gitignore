@@ -71,3 +71,4 @@ serviceAccountKey.json
 novel-talk-ec2.pem
 
 deploy.sh
+deploy_remote.sh
