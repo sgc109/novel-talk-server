@@ -5,25 +5,38 @@ import jwt from '../../../jwt';
 
 const router = express.Router();
 
+router.route('/stories/:storyId/comments')
+  .get(async (req, res) => {
+    const { storyId } = req.params;
+    const { cnt = 30, lastLoadedId, sortBy = 'writtenAt' } = req.query;
 
-router.get('/series/:seriesId/story/:storyId/comment', (req, res) => {
+    let query;
+    if (lastLoadedId) {
+      query = Comment.find({ storyId, _id: { $lt: lastLoadedId } });
+    } else {
+      query = Comment.find({ storyId });
+    }
 
-});
+    if (sortBy === 'writtenAt') {
+      query = query.sort({ _id: -1 });
+    } else {
+      query = query.sort({ cntLike: -1 });
+    }
 
-router.post('/series/:seriesId/story/:storyId/comment/write', async (req, res) => {
-  const { content, writerId } = req.body;
-  const { seriesId, storyId } = req.params;
+    const comments = await query.limit(parseInt(cnt, 10)).exec();
 
-  let comment;
-  try {
-    comment = await Comment.create(storyId, writerId, content);
-  } catch (err) {
-    return res.status(504).json(err);
-  }
+    return res.status(200).json(comments);
+  })
+  .post(async (req, res) => {
+    const { user } = req;
+    const { content } = req.body;
+    const { storyId } = req.params;
 
-  // 글 작성자한테 notification
-  return res.status(201).json(comment);
-});
+    const comment = await Comment.create({ storyId, writerId: user._id, content });
+
+    // 글 작성자한테 notification
+    return res.status(201).json(comment);
+  });
 
 router.post('/comment/:commentId/hide', (req, res) => {
 

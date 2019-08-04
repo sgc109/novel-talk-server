@@ -3,6 +3,7 @@ import express from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import Series from '../../models/series';
+import Story from '../../models/story';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/genre/' });
@@ -12,24 +13,32 @@ router.route('/series')
     const { keyword, cnt, lastId } = req.query;
   })
   .post(upload.single('coverImage'), async (req, res) => {
+    const { user } = req;
     const { title, genreIds } = req.body;
-    const { authorization: authorId } = req.headers;
 
     const coverImage = {};
     coverImage.data = fs.readFileSync(req.file.path);
     coverImage.contentType = req.file.mimetype;
 
-
-    const series = await Series.create(title, authorId, coverImage, genreIds.split(','));
+    const series = await Series.create(title, user._id, coverImage, genreIds.split(','));
 
     return res.status(201).json(series);
   });
 
 router.route('/series/:seriesId')
-  .get((req, res) => {
+  .get(async (req, res) => {
+    const { seriesId } = req.params;
+
+    const series = await Series.findOne({ _id: seriesId });
+
+    return res.status(200).json(series);
   })
   .delete(async (req, res) => {
+    const { user } = req;
     const { seriesId } = req.params;
+
+    const series = await Series.findById({ _id: seriesId });
+    if (series.authorId !== user._id) return res.status(500).json({ message: 'unauthorized' });
 
     await Series.deleteOne({ _id: seriesId });
 
@@ -39,6 +48,14 @@ router.route('/series/:seriesId')
 router.route('/user/:userId/series')
   .get((req, res) => {
     const { sortBy } = req.params;
+  });
+
+router.route('/series/:seriesId/stories')
+  .get(async (req, res) => {
+    const { seriesId } = req.params;
+    const stories = await Story.find({ seriesId });
+
+    return res.status(200).json(stories);
   });
 
 export default router;

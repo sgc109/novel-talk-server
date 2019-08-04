@@ -15,17 +15,18 @@ function makeid(length) {
 
 
 const User = new Schema({
-  _id: { type: String, required: true, unique: true },
   nickname: { type: String, unique: true, required: true },
+  oauthId: { type: String, required: true },
+  provider: { type: String, required: true },
   isOfficial: { type: Boolean, default: false },
   profileImage: {
     data: Buffer,
     contentType: String,
     // default: '',
   },
-  createdDate: { type: Date, default: Date.now },
-
-}, { _id: false });
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
+});
 
 
 User.statics.getRandomUniqueNickname = async function () {
@@ -35,12 +36,13 @@ User.statics.getRandomUniqueNickname = async function () {
   return this.getRandomUniqueNickname();
 };
 
-User.statics.create = async function (uid) {
-  const nickname = await this.getRandomUniqueNickname();
+User.statics.create = function (nickname, oauthId, provider) {
   const user = new this({
-    _id: uid,
     nickname,
+    oauthId,
+    provider,
   });
+
   return user.save();
 };
 
@@ -49,6 +51,14 @@ User.statics.findOneByNickname = async function (nickname) {
   return this.findOne({
     nickname,
   }).exec();
+};
+
+User.statics.findOrCreate = async function (provider, oauthId) {
+  let user = await this.findOne({ provider, oauthId });
+  if (!user) {
+    user = await this.create(provider, oauthId);
+  }
+  return user;
 };
 
 export default mongoose.models.User || mongoose.model('User', User);

@@ -5,7 +5,7 @@ import comment from './api/comment';
 import auth from './api/auth';
 import genre from './api/genre';
 
-// import home from './api/home';
+// import home from './api/tag';
 // import notification from './api/notification';
 // import report from './api/report';
 // import talk from './api/talk';
@@ -18,7 +18,7 @@ export default (app) => {
     comment,
     auth,
     genre,
-    // home,
+    // tag,
     // notification,
     // report,
     // talk,
@@ -28,5 +28,16 @@ export default (app) => {
 
   app.get('/', (req, res) => {
     res.json({ result: 'hello world!' });
+  });
+
+  app.use((err, req, res, next) => {
+    console.log(err);
+
+    let code;
+    if (err.name === 'CastError') code = 500;
+    else code = 500;
+
+    res.status(code).send(err);
+    next();
   });
 };

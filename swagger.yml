@@ -8,13 +8,14 @@ servers:
     description: Local server
   - url: http://54.180.153.139/api
     description: Production server
-    
 tags:
 - name: "auth"
   description: ""
 - name: "user"
   description: ""
 - name: "genre"
+  description: ""
+- name: "tag"
   description: ""
 - name: "series"
   description: ""
@@ -110,7 +111,7 @@ paths:
     get:
       tags:
       - 'user'
-      summary: 'get profile of this user'
+      summary: 'get profile of this user (done~)'
       description: 'description'
       parameters:
       - name: userId
@@ -322,6 +323,29 @@ paths:
                   $ref: "#/components/schemas/Series"
         400:
           description: ""
+  /tags:
+    get:
+      tags:
+      - 'tag'
+      summary: 'get list of tags including this keyword as substring'
+      description: 'description'
+      parameters:
+      - name: keyword
+        in: query
+        schema:
+            type: string
+            example: BTS
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+        400:
+          description: ""
   /series:
     get:
       tags:
@@ -360,6 +384,24 @@ paths:
       - 'series'
       summary: 'create a series (done~)'
       description: 'description'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                genreIds:
+                  type: array
+                  items:
+                    type: string
+                coverImage:
+                  type: string
+                  format: binary
+              required:
+                - title
+                - genreIds
       responses:
         201:
           description: OK
@@ -428,7 +470,7 @@ paths:
     post:
       tags:
       - 'story'
-      summary: 'write a story in this series'
+      summary: 'write a story in this series (applying transaction left) (done~)'
       description: 'description'
       parameters:
         - name: 'seriesId'
@@ -450,7 +492,6 @@ paths:
                   format: binary
               required:
                 - title
-                - coverImage
       responses:
         201:
           description: ''
@@ -500,7 +541,7 @@ paths:
     patch:
       tags:
       - 'story'
-      summary: 'update story title'
+      summary: 'update title and coverImage of story'
       description: 'description'
       parameters:
         - name: 'storyId'
@@ -511,23 +552,30 @@ paths:
             type: string
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 title:
                   type: string
+                coverImage:
+                  type: string
+                  format: binary
               required:
                 - title
       responses:
         200:
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
         400:
           description: ""
     delete:
       tags:
       - 'story'
-      summary: 'remove this story'
+      summary: 'remove this story (applying transaction left) (done~)'
       description: 'description'
       parameters:
         - name: 'storyId'
@@ -674,18 +722,17 @@ paths:
           required: true
           schema:
             type: string
-        - name: 'lastItemId'
+        - name: 'lastLoadedId'
           in: 'query'
           description: ''
-          required: true
           schema:
             type: string
         - name: 'cnt'
           in: 'query'
           description: ''
-          required: true
           schema:
             type: number
+            default: 30
         - name: 'sortBy'
           in: 'query'
           description: ''
@@ -867,6 +914,36 @@ paths:
                   $ref: '#/components/schemas/Report'
         400:
           description: ""
+  /comments/{commentId}/report:
+    post:
+      tags:
+      - report
+      summary: 'post report of this comment'
+      description: ''
+      parameters: 
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  enum:
+                    - indecent
+                    - cussword
+                    - advertising
+              required:
+                - reason
+      responses:
+        200:
+          description: OK
 components:
   schemas:
     User:
@@ -925,6 +1002,16 @@ components:
               type: string
             contentType:
               type: string
+    Tag:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+          example: BTS
+        topRatedSeriesId:
+          type: string
     Series:
       type: object
       properties:
@@ -969,9 +1056,6 @@ components:
           type: string
         authorId:
           type: string
-        storyNo:
-          type: integer
-          example: 1
         title:
           type: string
           example: the Chamber of Secrets
@@ -988,6 +1072,13 @@ components:
         cntEval:
           type: integer
           example: 10
+        coverImage:
+          type: object
+          properties:
+            data:
+              type: string
+            contentType:
+              type: string
     Talk:
       type: object
       properties:
@@ -1047,7 +1138,13 @@ components:
       properties:
         _id:
           type: string
+  responses:
+    UnauthorizedError:
+        description: Access token is missing or invalid
   securitySchemes:
-    BearerAuth:
+    bearerAuth:
       type: http
       scheme: bearer
+security:
+  - bearerAuth: []
+  

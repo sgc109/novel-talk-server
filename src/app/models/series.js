@@ -13,17 +13,8 @@ const Series = new Schema({
     // default: '',
   },
   lastWrittenAt: { type: Date, default: '1970-01-01' },
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
-
-Series.statics.create = function (title, authorId, coverImage, genreIds) {
-  const series = new this({
-    title,
-    authorId,
-    coverImage,
-    genreIds,
-  });
-
-  return series.save();
-};
 
 export default mongoose.models.Series || mongoose.model('Series', Series);

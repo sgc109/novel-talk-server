@@ -8,17 +8,8 @@ const Comment = new Schema({
   content: { type: String, required: true },
   isHidden: { type: Boolean, default: false },
   cntLike: { type: Number, default: 0 },
-  date: { type: Date, default: Date.now },
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
-
-Comment.statics.create = function create(storyId, writerId, content) {
-  const comment = new this({
-    storyId,
-    writerId,
-    content,
-  });
-
-  return comment.save();
-};
 
 export default mongoose.models.Comment || mongoose.model('Comment', Comment);

@@ -6,17 +6,17 @@ const Story = new Schema({
   title: { type: String, required: true },
   seriesId: { type: Schema.Types.ObjectId, ref: 'Series' },
   authorId: { type: Schema.Types.ObjectId, ref: 'User' },
-  date: { type: Date, default: Date.now },
+  cntComment: { type: Number, default: 0 },
+  cntView: { type: Number, default: 0 },
+  sumScore: { type: Number, default: 0.0 },
+  cntEval: { type: Number, default: 0 },
+  coverImage: {
+    data: Buffer,
+    contentType: String,
+    // default: '',
+  },
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
-
-Story.statics.create = function create(title, seriesId, authorId) {
-  const story = new this({
-    title,
-    seriesId,
-    authorId,
-  });
-
-  return story.save();
-};
 
 export default mongoose.models.Story || mongoose.model('Story', Story);
