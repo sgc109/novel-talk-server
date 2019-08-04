@@ -392,10 +392,10 @@ paths:
               properties:
                 title:
                   type: string
-                genreIds:
-                  type: array
-                  items:
-                    type: string
+                  example: Harry Potter
+                genreId:
+                  type: string
+                  example: 5d4195f5697dc220d07efdde
                 coverImage:
                   type: string
                   format: binary
@@ -522,7 +522,7 @@ paths:
             type: string
             enum:
             - dictionary
-            - cntComment
+            - cntComments
             - writtenAt
             - score
             default: writtenAt
@@ -713,7 +713,7 @@ paths:
     get:
       tags:
       - 'comment'
-      summary: 'get comments in story'
+      summary: 'get comments in story (done~)'
       description: 'description'
       parameters:
         - name: 'storyId'
@@ -757,7 +757,7 @@ paths:
     post:
       tags:
       - 'comment'
-      summary: 'write comment in story'
+      summary: 'write comment in story (done~)'
       description: 'description'
       parameters:
         - name: 'storyId'
@@ -791,7 +791,7 @@ paths:
     delete:
       tags:
       - 'comment'
-      summary: 'remove this comment'
+      summary: 'remove this comment (done~)'
       description: 'description'
       parameters:
         - name: 'commentId'
@@ -809,7 +809,7 @@ paths:
     patch:
       tags:
       - 'comment'
-      summary: 'hide this comment'
+      summary: 'hide this comment (done~)'
       description: 'description'
       parameters:
         - name: 'commentId'
@@ -1062,7 +1062,7 @@ components:
         createdAt:
           type: string
           format: date-time
-        cntComment:
+        cntComments:
           type: integer
         cntView:
           type: integer

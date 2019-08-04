@@ -14,13 +14,19 @@ router.route('/series')
   })
   .post(upload.single('coverImage'), async (req, res) => {
     const { user } = req;
-    const { title, genreIds } = req.body;
+    const { title, genreId } = req.body;
 
     const coverImage = {};
-    coverImage.data = fs.readFileSync(req.file.path);
-    coverImage.contentType = req.file.mimetype;
+    try {
+      coverImage.data = fs.readFileSync(req.file.path);
+      coverImage.contentType = req.file.mimetype;
+    } catch (err) {
+      console.log('coverImage is not uploaded');
+    }
 
-    const series = await Series.create(title, user._id, coverImage, genreIds.split(','));
+    const series = await Series.create({
+      title, authorId: user._id, coverImage, genreId,
+    });
 
     return res.status(201).json(series);
   });

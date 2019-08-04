@@ -31,11 +31,7 @@ export default (app) => {
   });
 
   app.use((err, req, res, next) => {
-    console.log(err);
-
-    let code;
-    if (err.name === 'CastError') code = 500;
-    else code = 500;
+    const { code = 500 } = err;
 
     res.status(code).send(err);
     next();

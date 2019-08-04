@@ -32,7 +32,7 @@ router(app);
 Console.log(process.env.MY_VAR);
 
 mongoose.set('useCreateIndex', true);
-mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDBName}`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDBName}`, { useNewUrlParser: true, useFindAndModify: false });
 const db = mongoose.connection;
 // db.on('error', Console.error);
 db.once('open', () => {
@@ -50,6 +50,8 @@ app.use((error, req, res, next) => {
   return res.status(500).send(error);
 });
 
-app.listen(port, () => {
+export const disposable = app.listen(port, () => {
   Console.log(`Express is running on port ${port}`);
 });
+
+export default app;
