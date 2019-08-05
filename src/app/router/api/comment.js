@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import express from 'express';
 import Comment from '../../models/comment';
+import Story from '../../models/story';
 import jwt from '../../../jwt';
+import { RESPONSE_RESOURCE_NOT_FOUND, RESPONSE_UNAUTHORIZED } from '../response';
 
 const router = express.Router();
 
@@ -32,44 +34,58 @@ router.route('/stories/:storyId/comments')
     const { content } = req.body;
     const { storyId } = req.params;
 
+    // must add Transaction
     const comment = await Comment.create({ storyId, writerId: user._id, content });
+    await Story.findByIdAndUpdate(storyId, { $inc: { cntComments: 1 } });
 
     // 글 작성자한테 notification
     return res.status(201).json(comment);
   });
 
-router.post('/comment/:commentId/hide', (req, res) => {
+router.patch('/comments/:commentId/hide', async (req, res) => {
+  const { user } = req;
+  const { commentId } = req.params;
+
+  const comment = await Comment.findById(commentId);
+  if (!comment) throw RESPONSE_RESOURCE_NOT_FOUND;
+
+  const story = await Story.findById(comment.storyId);
+  if (!story) throw RESPONSE_RESOURCE_NOT_FOUND;
+
+  if (!story.authorId.equals(user._id)) throw RESPONSE_UNAUTHORIZED;
+
+  await Comment.updateOne({ _id: commentId }, { isHidden: true });
+
+  res.status(202).send('successfully hided comment');
+});
+
+router.patch('/comments/:commentId/unhide', async (req, res) => {
 
 });
 
-router.put('/comment/:commentId/like', (req, res) => {
+router.patch('/comments/:commentId/like', (req, res) => {
   // 댓글 작성자한테 notification
 });
 
-router.put('/comment/:commentId/unlike', (req, res) => {
+router.patch('/comments/:commentId/unlike', (req, res) => {
 
 });
 
-router.delete('/comment/:commentId/remove', async (req, res) => {
-  const token = req.headers['x-access-token'] || req.query.token;
-
-  let decoded;
-  try {
-    decoded = await jwt.verify(token, req.app.get('jwt-secret'));
-  } catch (err) {
-    return res.status(403).json({
-      success: false,
-      message: err.message,
-    });
-  }
-
+router.delete('/comments/:commentId', async (req, res) => {
+  const { user } = req;
   const { commentId } = req.params;
-  try {
-    Comment.findOneAndDelete({ _id: commentId, writerId: decoded.uid });
-  } catch (err) {
-    return res.status(401).res('unauthorized');
-  }
-  return res.status(202).res('successfully deleted');
+
+  const comment = await Comment.findById(commentId);
+  if (!comment) throw RESPONSE_RESOURCE_NOT_FOUND;
+
+  const { writerId } = comment;
+  if (!writerId.equals(user._id)) throw RESPONSE_UNAUTHORIZED;
+
+  // Must add Transaction
+  const { storyId } = await Comment.findOneAndDelete({ _id: commentId });
+  await Story.findByIdAndUpdate(storyId, { $inc: { cntComments: -1 } });
+
+  return res.status(202).send('successfully deleted');
 });
 
 export default router;

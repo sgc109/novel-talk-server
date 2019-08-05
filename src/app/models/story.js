@@ -6,7 +6,7 @@ const Story = new Schema({
   title: { type: String, required: true },
   seriesId: { type: Schema.Types.ObjectId, ref: 'Series' },
   authorId: { type: Schema.Types.ObjectId, ref: 'User' },
-  cntComment: { type: Number, default: 0 },
+  cntComments: { type: Number, default: 0 },
   cntView: { type: Number, default: 0 },
   sumScore: { type: Number, default: 0.0 },
   cntEval: { type: Number, default: 0 },

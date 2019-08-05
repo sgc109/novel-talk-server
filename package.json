@@ -1,12 +1,16 @@
 {
   "scripts": {
-    "test": "eslint src/**",
+    "test": "babel-node node_modules/.bin/babel-istanbul cover mocha -- test/test.js",
     "debug": "nodemon --inspect --exec 'eslint src/** && babel-node app.js'",
     "docker:start": "eslint src/** && MONGO_HOST=mongo babel-node app.js",
     "start": "nodemon --exec 'eslint src/** && babel-node app.js'"
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
+    "@babel/register": "^7.5.5",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-istanbul": "^0.12.2",
+    "babel-polyfill": "^6.26.0",
+    "chai": "^4.2.0",
     "diff": "3.5.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
@@ -15,6 +19,7 @@
     "google-auth-library": "^0.12.0",
     "growl": "1.10.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.0",
     "mongodb": "^3.3.0-beta2",
     "mongoose": "^5.6.4",
     "mpath": "0.5.1",
@@ -26,6 +31,7 @@
     "passport-kakao": "^0.0.5",
     "passport-naver": "^1.0.6",
     "string": "^3.3.3",
+    "supertest": "^4.0.2",
     "swagger": "^0.7.5",
     "swagger-editor": "^3.6.31",
     "swagger-jsdoc": "^3.3.0",
