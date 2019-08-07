@@ -8,7 +8,7 @@ import YAML from 'yamljs';
 import session from 'express-session';
 import router from './src/app/router';
 import Console from './src/console';
-// import requiresAuth from './src/oauth/google';
+import requiresAuth from './src/oauth/oauth';
 import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
 import authMiddleware from './src/jwt';
 
@@ -23,9 +23,8 @@ app.use(express.json());
 app.use(session({ secret: 'anything' }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(authMiddleware);
-
-// app.use(requiresAuth);
+// app.use(authMiddleware);
+app.use(requiresAuth);
 
 router(app);
 
