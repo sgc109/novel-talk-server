@@ -8,9 +8,8 @@ import YAML from 'yamljs';
 import session from 'express-session';
 import router from './src/app/router';
 import Console from './src/console';
-import requiresAuth from './src/oauth/oauth';
+import requiresAuth from './src/app/router/middleware/oauth';
 import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
-import authMiddleware from './src/jwt';
 
 const swaggerDocument = YAML.load('./swagger.yml');
 
@@ -23,7 +22,6 @@ app.use(express.json());
 app.use(session({ secret: 'anything' }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(authMiddleware);
 app.use(requiresAuth);
 
 router(app);
@@ -35,7 +33,7 @@ mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDBName}`, { useNewU
 const db = mongoose.connection;
 // db.on('error', Console.error);
 db.once('open', () => {
-  Console.log('connected to mongodb server');
+  // Console.log('connected to mongodb server');
 });
 
 // eslint-disable-next-line no-unused-vars

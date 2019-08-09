@@ -3,6 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import Genre from '../../models/genre';
+import Series from '../../models/series';
 import { Http500Response } from '../response';
 
 const router = express.Router();
@@ -16,11 +17,11 @@ router.route('/genres')
   .post(upload.single('coverImage'), async (req, res) => {
     // Check if requester has admin auth or not
     const { title, description } = req.body;
-    const coverImage = {};
-    coverImage.data = fs.readFileSync(req.file.path);
-    coverImage.contentType = req.file.mimetype;
+    // const coverImage = {};
+    // coverImage.data = fs.readFileSync(req.file.path);
+    // coverImage.contentType = req.file.mimetype;
 
-    const genre = await Genre.create(title, description, coverImage);
+    const genre = await Genre.create({ title, description, coverImage: req.file.path });
 
     return res.status(201).json(genre);
   });
@@ -29,18 +30,19 @@ router.route('/genres/:genreId')
   .put(upload.single('coverImage'), async (req, res) => {
     const { genreId } = req.params;
     const { title, description } = req.body;
-    const coverImage = {};
-    coverImage.data = fs.readFileSync(req.file.path);
-    coverImage.contentType = req.file.mimetype;
+    // const coverImage = {};
+    // coverImage.data = fs.readFileSync(req.file.path);
+    // coverImage.contentType = req.file.mimetype;
 
-    const result = await Genre.updateOne(
+    const updatedGenre = await Genre.findOneAndUpdate(
       { _id: genreId },
-      { title, description, coverImage },
+      { title, description, coverImageUrl: req.file.path },
+      { new: true },
     );
 
-    if (!result.nModified) throw Http500Response('nothing is changed!');
+    if (!updatedGenre) throw Http500Response('nothing is changed!');
 
-    return res.status(202).send('modification accepted');
+    return res.status(202).json(updatedGenre);
   })
   .delete(async (req, res) => {
     const { genreId } = req.params;
@@ -53,6 +55,8 @@ router.route('/genres/:genreId')
 router.route('/genres/:genreId/series')
   .get(async (req, res) => {
     const { genreId } = req.params;
+
+    res.send(await Series.find({ genreId }));
   });
 
 export default router;

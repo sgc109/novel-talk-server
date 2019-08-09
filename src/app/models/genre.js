@@ -5,23 +5,10 @@ const { Schema } = mongoose;
 const Genre = new Schema({
   title: { type: String, unique: true, required: true },
   description: { type: String, required: true },
-  coverImage: {
-    data: Buffer,
-    contentType: String,
-  },
+  coverImageUrl: { type: String, default: '' },
 }, {
   timestamps: { createdAt: true, updatedAt: true },
 });
-
-Genre.statics.create = function (title, description, coverImage) {
-  const genre = new this({
-    title,
-    description,
-    coverImage,
-  });
-
-  return genre.save();
-};
 
 Genre.statics.getAllGenres = async function () {
   const genres = await this.find();

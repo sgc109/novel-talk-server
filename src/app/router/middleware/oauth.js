@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
-import User from '../app/models/user';
+import User from '../../models/user';
+import { testAdminAccountNickname } from '../../../config/config';
 
-import { RESPONSE_UNAUTHORIZED } from '../app/router/response';
+import { RESPONSE_UNAUTHORIZED } from '../response';
 
 const requiresAuth = async (req, res, next) => {
-  if (req.header('oauthData')) {
+  if (process.env.TEST_MODE || req.header('oauthData')) {
+    req.user = await User.findOne({ nickname: testAdminAccountNickname });
     next();
     return;
   }
