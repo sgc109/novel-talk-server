@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
@@ -25,27 +26,27 @@ function makeid(length) {
   return `사용자_${result}`;
 }
 
-userSchema.statics.getRandomUniqueNickname = async function () {
-  const nickName = makeid(6);
-  const unique = (await this.findOneByNickname(nickName)) === null;
-  if (unique) return nickName;
-  return this.getRandomUniqueNickname();
-};
+// userSchema.methods.getRandomUniqueNickname = async function () {
+//   const nickName = makeid(6);
+//   const unique = (await this.model('User').findOneByNickname(nickName)) === null;
+//   if (unique) return nickName;
+//   return this.model('User').getRandomUniqueNickname();
+// };
 
-userSchema.statics.findOneByNickname = async function (nickname) {
-  const user = await this.findOne({ nickname }).exec();
-  return user;
-};
+// userSchema.methods.findOneByNickname = async function (nickname) {
+//   const user = await this.findOne({ nickname }).exec();
+//   return user;
+// };
 
-userSchema.statics.create = function (nickname, oauthId, provider) {
-  const user = new this({
-    nickname,
-    oauthId,
-    provider,
-  });
+// userSchema.statics.create = function (nickname, oauthId, provider) {
+//   const user = new this({
+//     nickname,
+//     oauthId,
+//     provider,
+//   });
 
-  return user.save();
-};
+//   return user.save();
+// };
 
 
 userSchema.methods.generateAuthToken = function () {
@@ -55,12 +56,12 @@ userSchema.methods.generateAuthToken = function () {
 };
 
 
-userSchema.pre('save', async function (next) {
-  const user = this;
-  user.nickname = await this.getRandomUniqueNickname();
-  console.log(`save user nickname ${user.nickname}`);
-  next();
-});
+// userSchema.pre('save', async function (next) {
+//   const user = this;
+//   user.nickname = await this.model('User').getRandomUniqueNickname();
+//   console.log(`save user nickname ${user.nickname}`);
+//   next();
+// });
 
 const User = mongoose.model('User', userSchema);
 
