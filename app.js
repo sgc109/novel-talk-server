@@ -1,7 +1,7 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
-import mongoose from 'mongoose';
 import MongoError from 'mongodb';
 import 'express-async-errors';
 import YAML from 'yamljs';

@@ -57,8 +57,6 @@ router.get('/auth/login/:provider', async (req, res) => {
     let user = await User.findOne({ oauthId });
     if (!user) {
       user = new User({ oauthId, provider });
-      console.log('user is signup');
-      console.log(user);
       await user.save();
     }
     const authToken = user.generateAuthToken();
