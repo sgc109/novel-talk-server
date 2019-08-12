@@ -7,6 +7,5 @@ const generateUserJson = () => ({
   profileImage: faker.image.avatar(),
 });
 
-export default [
-  ...Array(50).map(generateUserJson),
-];
+const users = Array.from({ length: 100 }).map(generateUserJson);
+export default users;
