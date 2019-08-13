@@ -16,7 +16,7 @@ const userSchema = new Schema({
 });
 
 
-function makeid(length) {
+function makeId(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
@@ -26,27 +26,12 @@ function makeid(length) {
   return `사용자_${result}`;
 }
 
-// userSchema.methods.getRandomUniqueNickname = async function () {
-//   const nickName = makeid(6);
-//   const unique = (await this.model('User').findOneByNickname(nickName)) === null;
-//   if (unique) return nickName;
-//   return this.model('User').getRandomUniqueNickname();
-// };
-
-// userSchema.methods.findOneByNickname = async function (nickname) {
-//   const user = await this.findOne({ nickname }).exec();
-//   return user;
-// };
-
-// userSchema.statics.create = function (nickname, oauthId, provider) {
-//   const user = new this({
-//     nickname,
-//     oauthId,
-//     provider,
-//   });
-
-//   return user.save();
-// };
+async function getRandomUniqueNickname() {
+  const nickname = makeId(6);
+  const unique = (await User.findOne({ nickname })) === null;
+  if (unique) return nickname;
+  return getRandomUniqueNickname();
+}
 
 
 userSchema.methods.generateAuthToken = function () {
@@ -55,13 +40,11 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-
-// userSchema.pre('save', async function (next) {
-//   const user = this;
-//   user.nickname = await this.model('User').getRandomUniqueNickname();
-//   console.log(`save user nickname ${user.nickname}`);
-//   next();
-// });
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.nickname = await getRandomUniqueNickname();
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 

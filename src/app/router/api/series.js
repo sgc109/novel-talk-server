@@ -10,7 +10,9 @@ const upload = multer({ dest: 'uploads/genre/' });
 
 router.route('/series')
   .get((req, res) => {
-    const { keyword, cnt, lastId } = req.query;
+    const {
+      keyword, cnt, lastId, sortBy,
+    } = req.query;
   })
   .post(upload.single('coverImage'), async (req, res) => {
     const { user } = req;
@@ -31,12 +33,26 @@ router.route('/series')
     return res.status(201).json(series);
   });
 
+// author: { type: Schema.Types.ObjectId, ref: 'User' },
+// genre: { type: Schema.Types.ObjectId, ref: 'Genre' },
+
+
+router.route('/series/recommends')
+  .get(async (req, res) => {
+    const recommends = await Series.find({
+      isRecommend: true,
+    }).populate('author')
+      .populate('genre')
+      .limit(3)
+      .exec();
+    return res.status(200).json(recommends);
+  });
+
+
 router.route('/series/:seriesId')
   .get(async (req, res) => {
     const { seriesId } = req.params;
-
     const series = await Series.findOne({ _id: seriesId });
-
     return res.status(200).json(series);
   })
   .delete(async (req, res) => {

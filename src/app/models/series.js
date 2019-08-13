@@ -4,14 +4,11 @@ const { Schema } = mongoose;
 
 const Series = new Schema({
   title: { type: String, required: true },
-  authorId: { type: Schema.Types.ObjectId, ref: 'User' },
-  genreId: { type: Schema.Types.ObjectId, ref: 'Genre' },
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
+  genre: { type: Schema.Types.ObjectId, ref: 'Genre' },
+  isRecommend: { type: Boolean, index: true },
   cntStories: { type: Number, default: 0 },
-  coverImage: {
-    data: Buffer,
-    contentType: String,
-    // default: '',
-  },
+  coverImage: { type: String, required: true },
   lastWrittenAt: { type: Date, default: '1970-01-01' },
 }, {
   timestamps: { createdAt: true, updatedAt: true },
