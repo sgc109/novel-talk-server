@@ -8,6 +8,6 @@ const generateSeriesJson = () => ({
 });
 
 
-const series = Array.from({ length: 30 }).map(generateSeriesJson);
+const series = Array.from({ length: 15 }).map(generateSeriesJson);
 
 export default series;
