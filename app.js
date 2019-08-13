@@ -9,7 +9,9 @@ import session from 'express-session';
 import router from './src/app/router';
 import Console from './src/console';
 import requiresAuth from './src/app/router/middleware/oauth';
-import { mongoHost, mongoPort, mongoDBName } from './src/config/db';
+import {
+  mongoHost, mongoPort, mongoDBName,
+} from './src/config/db';
 
 const swaggerDocument = YAML.load('./swagger.yml');
 
@@ -29,6 +31,7 @@ router(app);
 Console.log(process.env.MY_VAR);
 
 mongoose.set('useCreateIndex', true);
+
 mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDBName}`, { useNewUrlParser: true, useFindAndModify: false });
 const db = mongoose.connection;
 // db.on('error', Console.error);

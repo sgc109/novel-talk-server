@@ -60,7 +60,10 @@ router.get('/auth/login/:provider', async (req, res) => {
       await user.save();
     }
     const authToken = user.generateAuthToken();
-
+    console.log({
+      user,
+      token: authToken,
+    });
 
     res.status(201).send({ user, token: authToken });
   } catch (e) {

@@ -49,7 +49,6 @@ dependencies
     return { series: series._id, author: user._id };
   })
   .set(Comment, async () => {
-    // Comment should be created after User,Series,Story model created
     const user = await getRandomData(User);
     const series = await getRandomData(Series);
     const story = await getRandomData(Story);

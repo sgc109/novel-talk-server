@@ -1,4 +1,6 @@
-const faker = require('faker');
+
+const faker = require('faker/locale/ko');
+
 
 const coverImages = [
   'https://sutrahr.com/wp-content/uploads/2016/03/stand-alone-1280-720-3835.jpg',
@@ -16,12 +18,12 @@ const coverImages = [
 
 const generateSeriesJson = () => ({
   title: faker.lorem.sentence(),
-  isRecommend: false,
-  cntStories: 0,
+  isRecommend: faker.random.number() % 3 === 0,
+  cntStories: faker.random.number() % 50 + 1,
   coverImage: coverImages[faker.random.number() % coverImages.length],
 });
 
 
-const series = Array.from({ length: 15 }).map(generateSeriesJson);
+const series = Array.from({ length: 18 }).map(generateSeriesJson);
 
 export default series;
