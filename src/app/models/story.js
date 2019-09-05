@@ -10,6 +10,7 @@ const Story = new Schema({
   cntView: { type: Number, default: 0 },
   sumScore: { type: Number, default: 0.0 },
   cntEval: { type: Number, default: 0 },
+  coverImageUrl: { type: String, default: '' },
 }, {
   timestamps: { createdAt: true, updatedAt: true },
 });

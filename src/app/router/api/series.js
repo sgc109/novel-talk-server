@@ -18,16 +18,16 @@ router.route('/series')
     const { user } = req;
     const { title, genreId } = req.body;
 
-    const coverImage = {};
-    try {
-      coverImage.data = fs.readFileSync(req.file.path);
-      coverImage.contentType = req.file.mimetype;
-    } catch (err) {
-      console.log('coverImage is not uploaded');
-    }
+    // const coverImage = {};
+    // try {
+    //   coverImage.data = fs.readFileSync(req.file.path);
+    //   coverImage.contentType = req.file.mimetype;
+    // } catch (err) {
+    //   console.log('coverImage is not uploaded');
+    // }
 
     const series = await Series.create({
-      title, authorId: user._id, coverImage, genreId,
+      title, authorId: user._id, coverImageUrl: req.file.path, genreId,
     });
 
     return res.status(201).json(series);

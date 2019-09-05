@@ -16,13 +16,13 @@ router.route('/series/:seriesId/stories')
     const { title } = req.body;
     const { seriesId } = req.params;
 
-    const coverImage = {};
-    try {
-      coverImage.data = fs.readFileSync(req.file.path);
-      coverImage.contentType = req.file.mimetype;
-    } catch (err) {
-      console.log('file is not uploaded');
-    }
+    // const coverImage = {};
+    // try {
+    //   coverImage.data = fs.readFileSync(req.file.path);
+    //   coverImage.contentType = req.file.mimetype;
+    // } catch (err) {
+    //   // console.log('file is not uploaded');
+    // }
 
     /* TODO add transaction by solving replica set problem */
 
@@ -34,7 +34,7 @@ router.route('/series/:seriesId/stories')
     if (!authorId.equals(user._id)) return res.status(401).send('Unauthorized');
 
     const story = await Story.create({
-      title, seriesId, authorId: user._id, coverImage,
+      title, seriesId, authorId: user._id, coverImageUrl: req.file.path,
     });
 
     await Series.updateOne({ _id: seriesId }, { $inc: { cntStories: 1 } });
@@ -55,14 +55,16 @@ router.route('/stories/:storyId')
     const { storyId } = req.params;
     const { title } = req.body;
 
-    const coverImage = {};
-    coverImage.data = fs.readFileSync(req.file.path);
-    coverImage.contentType = req.file.mimetype;
+    // const coverImage = {};
+    // coverImage.data = fs.readFileSync(req.file.path);
+    // coverImage.contentType = req.file.mimetype;
 
     const { authorId } = await Story.findById(storyId);
     if (!authorId.equals(user._id)) return res.status(401).send('Unauthorized');
 
-    const updatedStory = await Story.updateOne({ _id: storyId }, { title, coverImage });
+    const updatedStory = await Story.updateOne(
+      { _id: storyId }, { title, coverImageUrl: req.file.path },
+    );
 
     return res.status(202).json(updatedStory);
   })

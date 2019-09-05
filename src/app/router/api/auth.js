@@ -67,7 +67,7 @@ router.get('/auth/login/:provider', async (req, res) => {
 
     res.status(201).send({ user, token: authToken });
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     throw RESPONSE_UNAUTHORIZED;
   }
 });

@@ -13,7 +13,7 @@ export default jwt => describe('Genre Test', async () => {
       .post(`${baseUrl}/genres`)
       .field('title', 'mock genre')
       .field('description', 'mock genre')
-      .attach('coverImage', 'src/static/images/android.png')
+      .attach('coverImageUrl', 'static/images/android.png')
       .expect(201);
   });
 
@@ -33,7 +33,7 @@ export default jwt => describe('Genre Test', async () => {
       .put(`${baseUrl}/genres/${genreId}`)
       .field('title', newTitle)
       .field('description', newDescription)
-      .attach('coverImage', 'src/static/images/android.png');
+      .attach('coverImageUrl', 'static/images/android.png');
     expect(res.status).to.equal(202);
     expect(res.body).to.haveOwnProperty('title', newTitle);
     expect(res.body).to.haveOwnProperty('description', newDescription);
@@ -43,9 +43,6 @@ export default jwt => describe('Genre Test', async () => {
     const res = await request(server)
       .get(`${baseUrl}/genres/${genreId}/series`);
     expect(res.status).to.equal(200);
-    // expect(res.body).to.be.an('array').that.is.not.empty();
-    // const [series] = res.body;
-    // expect(series.genreId).to.equal(genreId);
   });
 
   it('Delete Genre', async () => {

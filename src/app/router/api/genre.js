@@ -11,7 +11,7 @@ const upload = multer({ dest: 'uploads/genre/' });
 
 router.route('/genres')
   .get(async (req, res) => {
-    const genres = await Genre.getAllGenres();
+    const genres = await Genre.find();
     res.status(200).send(genres);
   })
   .post(upload.single('coverImage'), async (req, res) => {
@@ -21,7 +21,7 @@ router.route('/genres')
     // coverImage.data = fs.readFileSync(req.file.path);
     // coverImage.contentType = req.file.mimetype;
 
-    const genre = await Genre.create({ title, description, coverImage: req.file.path });
+    const genre = await Genre.create({ title, description, coverImageUrl: req.file.path });
 
     return res.status(201).json(genre);
   });

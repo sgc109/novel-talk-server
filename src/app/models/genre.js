@@ -21,9 +21,4 @@ const Genre = new Schema({
   timestamps: { createdAt: true, updatedAt: true },
 });
 
-Genre.statics.getAllGenres = async function () {
-  const genres = await this.find();
-  return genres;
-};
-
 export default mongoose.models.Genre || mongoose.model('Genre', Genre);

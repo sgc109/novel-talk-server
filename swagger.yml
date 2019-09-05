@@ -128,6 +128,45 @@ paths:
                 $ref: '#/components/schemas/User'
         400:
           description: ""
+  /user/{userId]/photo:
+    post:
+      tags:
+      - 'user'
+      summary: 'send a profile image of this user'
+      description: 'description'
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "description"
+        required: true
+        schema:
+            type: "string"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                coverImage:
+                  type: string
+                  format: binary
+              required:
+                - coverImage
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imageUrl:
+                    type: string
+                    description: url of uploaded image
+        400:
+          description: ""
+        500:
+          description: ""
   /users/{userId}/authorize:
     post:
       tags:
@@ -249,7 +288,7 @@ paths:
         400:
           description: ""
   /genres/{genreId}:
-    put:
+    patch:
       tags:
       - 'genre'
       summary: 'modify this genre (done~)'
@@ -263,18 +302,14 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
                 title:
                   type: string
-                coverImage:
+                coverImageUrl:
                   type: string
-                  format: binary
-              required:
-                - title
-                - coverImage
       responses:
         200:
           description: OK
@@ -386,7 +421,7 @@ paths:
       description: 'description'
       requestBody:
         content:
-          multipart/form-data:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
@@ -396,9 +431,8 @@ paths:
                 genreId:
                   type: string
                   example: 5d4195f5697dc220d07efdde
-                coverImage:
+                coverImageUrl:
                   type: string
-                  format: binary
               required:
                 - title
                 - genreIds
@@ -410,6 +444,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/Series"
         400:
+          description: ""
+  /series/cover:
+    post:
+      tags:
+      - 'series'
+      summary: 'send a cover image of this series'
+      description: 'description'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                coverImage:
+                  type: string
+                  format: binary
+              required:
+                - coverImage
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imageUrl:
+                    type: string
+                    description: url of uploaded image
+        400:
+          description: ""
+        500:
           description: ""
   /series/{seriesId}:
     parameters:
@@ -481,15 +547,14 @@ paths:
             type: string
       requestBody:
         content:
-          multipart/form-data:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
                 title:
                   type: string
-                coverImage:
+                coverImageUrl:
                   type: string
-                  format: binary
               required:
                 - title
       responses:
@@ -501,6 +566,45 @@ paths:
                 $ref: '#/components/schemas/Story'
         400:
           description: ''
+  /series/{seriesId}/stories/cover:
+    post:
+      tags:
+      - 'story'
+      summary: 'send a cover image of this story'
+      description: 'description'
+      parameters:
+      - name: "seriesId"
+        in: "path"
+        description: "description"
+        required: true
+        schema:
+            type: "string"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                coverImage:
+                  type: string
+                  format: binary
+              required:
+                - coverImage
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imageUrl:
+                    type: string
+                    description: url of uploaded image
+        400:
+          description: ""
+        500:
+          description: ""
   /user/{userId}/series:
     get:
       tags:
@@ -552,15 +656,14 @@ paths:
             type: string
       requestBody:
         content:
-          multipart/form-data:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
                 title:
                   type: string
-                coverImage:
+                coverImageUrl:
                   type: string
-                  format: binary
               required:
                 - title
       responses:
@@ -977,13 +1080,8 @@ components:
           type: integer
           default: 0
           example: 10
-        profileImage:
-          type: object
-          properties:
-            data:
-              type: string
-            contentType:
-              type: string
+        profileImageUrl:
+          type: string
     Genre:
       type: object
       properties:
@@ -995,13 +1093,8 @@ components:
         description:
           type: string
           example: Love story
-        coverImage:
-          type: object
-          properties:
-            data:
-              type: string
-            contentType:
-              type: string
+        coverImageUrl:
+          type: string
     Tag:
       type: object
       properties:
@@ -1023,13 +1116,8 @@ components:
         authorId:
           type: string
           example: 5d4195f5697dc220d07efdde
-        coverImage:
-          type: object
-          properties:
-            data:
-              type: string
-            contentType:
-              type: string
+        coverImageUrl:
+          type: string
         genreId:
           type: array
           items:
@@ -1072,13 +1160,8 @@ components:
         cntEval:
           type: integer
           example: 10
-        coverImage:
-          type: object
-          properties:
-            data:
-              type: string
-            contentType:
-              type: string
+        coverImageUrl:
+          type: string
     Talk:
       type: object
       properties:

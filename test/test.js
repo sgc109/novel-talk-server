@@ -1,35 +1,54 @@
+/* eslint-disable no-unused-vars */
 // import chai from 'chai';
-import request from 'supertest';
-import { expect } from 'chai';
+// import request from 'supertest';
+// import { expect } from 'chai';
 import mongoose from 'mongoose';
-import server, { disposable } from '../app';
+import { disposable } from '../app';
 import genreTest from './api/genre.test';
+import seriesTest from './api/series.test';
 import { mongoTestHost, mongoTestPort, mongoTestDBName } from './config';
 import User from '../src/app/models/user';
-import { testAdminAccountNickname, testUserAccountNickname } from '../src/config/config';
+import Series from '../src/app/models/series';
+import Genre from '../src/app/models/genre';
+import Story from '../src/app/models/story';
+import Comment from '../src/app/models/comment';
 
-const baseUrl = '/api';
+import { testOfficialUserNickname, testNormalUserNickname } from '../src/config/config';
 
-describe('Novel Talk Server', () => {
+// const baseUrl = '/api';
+let officialUser;
+let normalUser;
+let genreId;
+let seriesId;
+let storyId;
+let commentId;
+
+describe('Novel Talk Server', async () => {
   before(async () => {
     await mongoose.disconnect();
     await mongoose.connect(`mongodb://${mongoTestHost}:${mongoTestPort}/${mongoTestDBName}`, { useNewUrlParser: true, useFindAndModify: false });
     await mongoose.connection.dropDatabase();
-    await User.create({
-      nickname: testAdminAccountNickname,
+    officialUser = await User.create({
+      nickname: testOfficialUserNickname,
       oauthId: 'dummy',
       provider: 'noone',
       isOfficial: true,
     });
 
-    await User.create({
-      nickname: testUserAccountNickname,
+    normalUser = await User.create({
+      nickname: testNormalUserNickname,
       oauthId: 'dummy',
       provider: 'noone',
       isOfficial: true,
     });
+
+    genreId = await Genre.create({ title: 'test', description: 'test' })._id;
+    seriesId = await Series.create({ title: 'title', authorId: officialUser._id, genreId })._id;
+    storyId = await Story.create({ title: 'title', seriesId, authorId: officialUser._id })._id;
+    commentId = await Comment.create({ storyId, writerId: normalUser._id, content: 'test' });
   });
   genreTest();
+  seriesTest();
   // describe('Series', () => {
   //   it('get all series', async () => {
   //     const res = await request(server)

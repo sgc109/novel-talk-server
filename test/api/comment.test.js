@@ -1,2 +1,2 @@
 
-export default (uid)
+// export default (uid)
